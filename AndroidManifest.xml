@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.teleal.cling.android.browser">
+          package="org.teleal.cling.android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -9,10 +9,11 @@
 
     <uses-sdk android:minSdkVersion="7"/>
 
-    <application android:icon="@drawable/appicon"
+    <application android:name=".upnp.UpnpBrowserApp" 
+    			 android:icon="@drawable/appicon"
                  android:label="@string/app_name">
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".browser.MainActivity"
                   android:theme="@android:style/Theme.NoTitleBar"
                   android:configChanges="orientation|keyboardHidden">
 
@@ -23,13 +24,13 @@
 
         </activity>
 
-        <activity android:name=".BrowseActivity"/>
-        <activity android:name=".DemoActivity"/>
-        <activity android:name=".BrowseDeviceActivity"/>
+        <activity android:name=".browser.BrowseActivity"/>
+        <activity android:name=".browser.DemoActivity"/>
+        <activity android:name=".browser.BrowseDeviceActivity"/>
         
 
         <!-- Custom AndroidUpnpServiceImpl - see the source -->
-        <service android:name=".BrowserUpnpService"/>
+        <service android:name=".browser.BrowserUpnpService"/>
 
     </application>
 

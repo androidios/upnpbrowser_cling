@@ -17,6 +17,20 @@
 
 package org.teleal.cling.android.browser;
 
+import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.teleal.cling.android.AndroidUpnpService;
+import org.teleal.cling.android.R;
+import org.teleal.cling.android.upnp.UpnpBrowserApp;
+import org.teleal.cling.model.meta.Device;
+import org.teleal.cling.model.meta.LocalDevice;
+import org.teleal.cling.model.meta.RemoteDevice;
+import org.teleal.cling.registry.DefaultRegistryListener;
+import org.teleal.cling.registry.Registry;
+import org.teleal.cling.transport.SwitchableRouter;
+
 import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -28,22 +42,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 import android.widget.ListView;
-
-import org.teleal.cling.android.AndroidUpnpService;
-import org.teleal.cling.model.meta.Device;
-import org.teleal.cling.model.meta.LocalDevice;
-import org.teleal.cling.model.meta.RemoteDevice;
-import org.teleal.cling.registry.DefaultRegistryListener;
-import org.teleal.cling.registry.Registry;
-import org.teleal.cling.transport.SwitchableRouter;
-
-
-
-import java.util.Comparator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import android.widget.Toast;
 
 /**
  * @author Christian Bauer
@@ -52,12 +52,16 @@ import java.util.logging.Logger;
 public class BrowseActivity extends ListActivity {
 
     // private static final Logger log = Logger.getLogger(BrowseActivity.class.getName());
+	
+	
 
     private ArrayAdapter<DeviceDisplay> listAdapter;
 
     private BrowseRegistryListener registryListener = new BrowseRegistryListener();
 
     private AndroidUpnpService upnpService;
+    
+    private UpnpBrowserApp app;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
 
@@ -87,6 +91,7 @@ public class BrowseActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.devicebrowse); 
         
+        UpnpBrowserApp app = ((UpnpBrowserApp) getApplication());
 
         listAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
         setListAdapter(listAdapter);
@@ -111,6 +116,7 @@ public class BrowseActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id){
 
     	Intent intent = new Intent(this, BrowseDeviceActivity.class);
+    	intent.putExtra("device", position);
     	startActivity(intent);
     	
     }
@@ -206,6 +212,11 @@ public class BrowseActivity extends ListActivity {
         public void deviceAdded(final Device device) {
             runOnUiThread(new Runnable() {
                 public void run() {
+                	
+                	app = (UpnpBrowserApp) getApplication();
+                	
+                	app.addDevice(device);
+                	
                     DeviceDisplay d = new DeviceDisplay(device);
 
                     int position = listAdapter.getPosition(d);
@@ -216,6 +227,9 @@ public class BrowseActivity extends ListActivity {
                     } else {
                         listAdapter.add(d);
                     }
+                    
+                    
+
 
                     // Sort it?
                     // listAdapter.sort(DISPLAY_COMPARATOR);
@@ -227,7 +241,10 @@ public class BrowseActivity extends ListActivity {
         public void deviceRemoved(final Device device) {
             runOnUiThread(new Runnable() {
                 public void run() {
+                	app = (UpnpBrowserApp) getApplication();
+                	
                     listAdapter.remove(new DeviceDisplay(device));
+                    app.rmDevice(device);
                 }
             });
         }

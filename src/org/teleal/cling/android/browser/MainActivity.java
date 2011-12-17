@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
 import org.teleal.android.util.FixedAndroidHandler;
+import org.teleal.cling.android.R;
 import org.teleal.common.logging.LoggingUtil;
 
 import java.util.logging.Level;

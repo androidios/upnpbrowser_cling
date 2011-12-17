@@ -28,6 +28,7 @@ import android.os.IBinder;
 import android.widget.ImageView;
 import android.widget.Toast;
 import org.teleal.cling.android.AndroidUpnpService;
+import org.teleal.cling.android.R;
 import org.teleal.cling.binding.LocalServiceBindingException;
 import org.teleal.cling.binding.annotations.AnnotationLocalServiceBinder;
 import org.teleal.cling.model.DefaultServiceManager;
