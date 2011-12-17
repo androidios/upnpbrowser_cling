@@ -26,8 +26,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
+import android.widget.ListView;
+
 import org.teleal.cling.android.AndroidUpnpService;
 import org.teleal.cling.model.meta.Device;
 import org.teleal.cling.model.meta.LocalDevice;
@@ -36,6 +39,8 @@ import org.teleal.cling.registry.DefaultRegistryListener;
 import org.teleal.cling.registry.Registry;
 import org.teleal.cling.transport.SwitchableRouter;
 
+
+
 import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +48,7 @@ import java.util.logging.Logger;
 /**
  * @author Christian Bauer
  */
+
 public class BrowseActivity extends ListActivity {
 
     // private static final Logger log = Logger.getLogger(BrowseActivity.class.getName());
@@ -79,6 +85,8 @@ public class BrowseActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setContentView(R.layout.devicebrowse); 
+        
 
         listAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
         setListAdapter(listAdapter);
@@ -98,7 +106,16 @@ public class BrowseActivity extends ListActivity {
         }
         getApplicationContext().unbindService(serviceConnection);
     }
+    
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id){
 
+    	Intent intent = new Intent(this, BrowseDeviceActivity.class);
+    	startActivity(intent);
+    	
+    }
+
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 0, 0, R.string.search_lan).setIcon(android.R.drawable.ic_menu_search);

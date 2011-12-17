@@ -25,6 +25,8 @@
 
         <activity android:name=".BrowseActivity"/>
         <activity android:name=".DemoActivity"/>
+        <activity android:name=".BrowseDeviceActivity"/>
+        
 
         <!-- Custom AndroidUpnpServiceImpl - see the source -->
         <service android:name=".BrowserUpnpService"/>
