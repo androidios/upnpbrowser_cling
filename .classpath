@@ -5,5 +5,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="libs/cling-core-1.0.5.jar"/>
 	<classpathentry kind="lib" path="libs/teleal-common-1.0.13.jar"/>
+	<classpathentry kind="lib" path="libs/cling-support-1.0.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
