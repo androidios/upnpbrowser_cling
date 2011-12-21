@@ -21,7 +21,12 @@ import org.teleal.cling.support.model.item.Item;
 
 
 import android.app.ListActivity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.widget.ArrayAdapter;
 
 
@@ -34,12 +39,29 @@ public class BrowseDeviceActivity extends ListActivity
 	
 	private Service service;
 	
+
+	
+	private Service[] services;
+	
 	ArrayAdapter<String> adapter;
+	
+	List<String> items = new ArrayList<String>();
+	
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            upnpService = (AndroidUpnpService) service;
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            upnpService = null;
+        }
+    };
 	
     public void onCreate(Bundle savedInstanceState) { 
     	super.onCreate(savedInstanceState);
     	
-    	
+//    	services = new ArrayList<Service>();
     	
     	
     	
@@ -48,41 +70,63 @@ public class BrowseDeviceActivity extends ListActivity
 	  
 	  device = ((UpnpBrowserApp) getApplication()).getDevice(position);
 	  
-        List<String> items = new ArrayList<String>();
+        
         items.add((String)(device.getDetails().getFriendlyName()));
         items.add((String)(device.getDetails().getSerialNumber()));
-        items.add((String)(device.getDetails().getModelDetails().getModelDescription()));
         
-//        device.getServices()
         
-        service = device.findService(new ServiceId("tt", null));
+
+        getApplicationContext().bindService(
+                new Intent(this, BrowserUpnpService.class),
+                serviceConnection,
+                Context.BIND_AUTO_CREATE
+        );
         
-        upnpService.getControlPoint().execute(
-        		new Browse(service, "0", BrowseFlag.DIRECT_CHILDREN){
+        services = device.getServices();
+        
+        items.add(services[0].getServiceId().getNamespace());
+        
+        service = device.findService(new ServiceId("upnp-org", "ContentDirectory"));
+        
+        if(service == null)
+        {
+        	items.add("service of the device is null");
+        }
+        
+        if(upnpService == null){
+        	items.add("upnpService is null");
+        }
+        
+        if((service != null)&&(upnpService != null)){
+        	upnpService.getControlPoint().execute(
+            		new Browse(service, "0", BrowseFlag.DIRECT_CHILDREN){
 
-					@Override
-					public void received(ActionInvocation arg0, DIDLContent arg1) {
-						// TODO Auto-generated method stub
-//				        assertEquals(arg1.getItems().size(), 2);
-				        Item item1 = arg1.getItems().get(0);
-						
-					}
+    					@Override
+    					public void received(ActionInvocation arg0, DIDLContent arg1) {
+    						// TODO Auto-generated method stub
+//    				        assertEquals(arg1.getItems().size(), 2);
+    				        Item item1 = arg1.getItems().get(0);
+    						items.add(item1.toString());
+    					}
 
-					@Override
-					public void updateStatus(Status arg0) {
-						// TODO Auto-generated method stub
-						
-					}
+    					@Override
+    					public void updateStatus(Status arg0) {
+    						// TODO Auto-generated method stub
+    						
+    					}
 
-					@Override
-					public void failure(ActionInvocation arg0,
-							UpnpResponse arg1, String arg2) {
-						// TODO Auto-generated method stub
-						
-					}
-        			
-        		}
-        		);
+    					@Override
+    					public void failure(ActionInvocation arg0,
+    							UpnpResponse arg1, String arg2) {
+    						// TODO Auto-generated method stub
+    						
+    					}
+            			
+            		}
+            		);
+        	
+        }
+        
         
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,items); 
                
